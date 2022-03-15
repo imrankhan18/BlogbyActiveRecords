@@ -12,7 +12,40 @@ class Blog extends Controller
         $this->view('sample');
     }
 
-    
+    public function addUser()
+    {
+        
+        $postdata = $_POST ?? array() ;
+        // print_r( $postdata);
+        if (isset($postdata["fullname"]) && isset($postdata["username"]) && isset($postdata["email"]) && isset($postdata["password"]) && isset($postdata["role"])) {
+            $user = $this->model('Blog');
+            $user->fullname=$postdata["fullname"];
+            $user->username=$postdata["username"];
+            $user->email=$postdata["email"];
+            $user->password=$postdata["password"];
+            $user->role=$postdata["role"];
+            $user->status="pending";
+            $user->save();
+            
+        }
+     
+        $data['user']=$this->model('Blog')::all();
+        $this->view('signup');
+    }
+    public function signIn()
+    {
+        // $data = $_POST ?? array() ;
+        $this->view('login');
+        $user=$this->model('Blog');
+        $result=$user::find_by_email_and_password($_POST['email'], $_POST['password']);
+        if ($result=='') {
+            echo "<h1>Not Present in DB</h1>";
+            
+        } else {
+             "<h1>Login successfull</h1>"."<br>";
+            //  header("location:blog");
+        }
+    }
     
     public function blog()
     {
