@@ -1,4 +1,23 @@
 <?php
+session_start();
+if (!isset($_SESSION['filename'])) {
+    $_SESSION['filename'] = '';
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $filename = $_FILES['f-upload']['name'];
+        $_SESSION['image'] = $filename;
+        if (isset($_SESSION['pics'])) {
+              array_push($_SESSION['pics'], $filename);
+        } else {
+            $_SESSION['pics'] = array($filename);
+        }
+        $file = 'uploads/' . $_FILES['f-upload']['name'];
+
+        if (isset($_POST['submit'])) {
+            move_uploaded_file($_FILES['f-upload']['tmp_name'], $file);
+            echo "uploaded Successfully!!!";
+        }
+    }
+}
 ?>
 
 <!doctype html>
@@ -17,6 +36,8 @@
 
 
   <!-- Bootstrap core CSS -->
+  <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
 
@@ -38,7 +59,7 @@
 
 
   <!-- Custom styles for this template -->
-  <link href="./assets/css/dashboard.css" rel="stylesheet">
+  <link href="../../public/assets/css//style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -60,7 +81,7 @@
         <a href='adduser'><button value="yes" name="signup" class="nav-link px-3 text-white bg-dark">Signup</button></a>
       </div>
     </div>
-    <<div class="navbar-nav">
+    <div class="navbar-nav">
       <div class="nav-item text-nowrap">
         <a href='signIn'><button value="yes" name="logout" class="nav-link px-3 text-white bg-dark">Logout</button></a>
       </div>
@@ -73,7 +94,7 @@
           <div class="position-sticky pt-3">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="bloghome">
+                <a class="nav-link active" aria-current="page" href="addblog">
                   <span data-feather="home"></span>
                   Home
                 </a>
@@ -81,19 +102,19 @@
               <li class="nav-item">
                 <a class="nav-link" href="orders.php">
                   <span data-feather="file"></span>
-                  Orders
+                  Dashboard
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="products.php">
+                <a class="nav-link" href="addblog">
                   <span data-feather="shopping-cart"></span>
-                  Products
+                  Blog Home
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="customers.php">
+                <a class="nav-link" href="bloghome">
                   <span data-feather="users"></span>
-                  Customers
+                  Add Blog
                 </a>
               </li>
               <li class="nav-item">
@@ -105,7 +126,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="layers"></span>
-                  Integrations
+                 
                 </a>
               </li>
             </ul>
@@ -126,7 +147,18 @@
               </button>
             </div>
           </div>
-      <form action='' method='post'>
+          <div> 
+            <h2>Admin's Profile</h2>
+          
+            <?php echo $_SESSION['show']; ?>
+            
+            
+
+        </div>
+        <div>
+            <?php echo $_SESSION['showusers']; ?> 
+        </div>
+      <form action='blog' method='post'>
           <h2>Add New BLOG</h2>
           <div class="table-responsive">
             <table class="table table-striped table-sm">
@@ -138,10 +170,11 @@
                 
                 </tr>
               </thead>
-              <form action='' method='post'>
+              <form action='bloghome' method='post'>
               <tbody>
               <td>
-                <input type='file' value='Add Pic' >
+                <input type='file' value='Add Pic' name='f-upload' >
+                <!-- <input type="submit" value="upload" name="submit" style="color:white; background-color:rgb(22,76,122); width:80px; height:40px;"><br><br> -->
               </td>
                 <td><input type='box' name='blogname' ></td>
                 <td><input type='box' name='type' ></td>
@@ -156,7 +189,7 @@
 
           <div class="navbar-nav">
       <div class="nav-item text-nowrap">
-        <button class='btn btn-primary' name='button' type='submit'>Post</button>
+        <button class='btn btn-primary' name='submit' type='submit'>Post</button>
       </div>
     </div>
     </form>

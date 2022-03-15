@@ -3,6 +3,8 @@ namespace App\Controllers;
 
 use App\Libraries\Controller;
 
+session_start();
+
 class Blog extends Controller
 {
     public function index()
@@ -10,61 +12,190 @@ class Blog extends Controller
         $this->view('sample');
     }
 
-    public function addUser()
-    {
-        
-        $postdata = $_POST ?? array() ;
-        // print_r( $postdata);
-        if (isset($postdata["fullname"]) && isset($postdata["username"]) && isset($postdata["email"]) && isset($postdata["password"])) {
-            $user = $this->model('Blog');
-            $user->fullname=$postdata["fullname"];
-            $user->username=$postdata["username"];
-            $user->email=$postdata["email"];
-            $user->password=$postdata["password"];
-            $user->role="user";
-            $user->status="pending";
-            $user->save();
-        }
-        // $data['user']=$this->model('Blog')::all();
-        $this->view('signup');
-    }
-    public function signIn()
-    {
-        $data = $_POST ?? array() ;
-        // print_r($data);
-
-        $this->view('login');
-        $user=$this->model('Blog');
-        $result=$user::find_by_email_and_password($_POST['email'], $_POST['password']);
-        if ($result=='') {
-            echo "<h1>Not Present in DB</h1>";
-        } else {
-             "<h1>Login successfull</h1>"."<br>";
-            //  header("location:blog");
-        }
-    }
+    
+    
     public function blog()
     {
-        $blogdata=$_POST ?? array();
+            $blogdata=$_POST ?? array();
+        if (isset($_POST['blogname'])=='') {
+                $this->view('dashboard');
 
-            $blog=$this->model('Blogdetails');
-            $blog->blogname=$blogdata['blogname'];
-            $blog->type=$blogdata['type'];
-            $blog->save();
-            $this->view('dashboard');
-            print_r($blogdata);
-
+        } else {
+                $blog=$this->model('Blogdetails');
+                $blog->blogname=$blogdata['blogname'];
+                $blog->type=$blogdata['type'];
+                $blog->pic=$blogdata['f-upload'];
+                $blog->save();
+                $this->view('addblog');
+                
+                // // print_r($blogdata);
+               
+                // print_r($res);
+                // $this->view('dashboard');
+                // $this->blogHome($res);
+        }
     }
-    public function blogHome()
+    public function blogHome($res)
     {
-        // $data = $_POST ?? array() ;
-        $this->view('bloghome');
-        print_r($_POST);
         $blog=$this->model('Blogdetails');
-        $res=$blog::find_by_blogname("something Funny");
-        print_r($res);
-        //print_r("<h1>fdesssssssssssssssssssssssssssssssss".$res."<h1>");
-         
+        $res=$blog::all();
         
+        $this->view('bloghome');
+        $this->admin();
+        $this->user();
+       
+        // print_r($res);
+         
     }
+    public function admin()
+    {
+        $this->view('dashboard');
+        $_SESSION['show']='';
+        $blog=$this->model('Blog');
+        $_SESSION['details']=$blog::all();
+        $result=array();
+        foreach($_SESSION['details'] as $key=> $val){
+            array_push($result,$val);
+        }
+        $_SESSION['details']=$result;
+        // print_r($result);
+
+        
+        
+            $_SESSION['show'].="<table class='table table-striped table-sm'>
+            <thead>
+                      <tr>
+                        <th>User Name</th>
+                        <th>Full Name</th>
+                        <th>Email </th>
+                        <th>Password</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                      </tr></thead>";
+        foreach($_SESSION['details'] as $k=>$v){
+         
+            // print_r($v);
+            if($v->role=='admin') {
+            $v->status="approve";
+            $_SESSION['show'].="<tbody>
+            <tr>
+            <td>".$v->fullname."</td>
+            <td>".$v->username."</td>
+            <td>".$v->email."</td>
+            <td>".$v->password."</td>
+            <td>".$v->role."</td>
+            <td>".$v->status."</td>
+           
+             <td><form action='' method='post'><button name='action' value=''></button></form></td>
+            </tr>
+            ";
+        }
+    }
+
+        $_SESSION['show'].="</tbody></table>";
+
+    }
+
+    public function user()
+    {
+        $this->view('dashboard');
+        $_SESSION['showusers']='';
+        $blog=$this->model('Blog');
+        $_SESSION['details']=$blog::all();
+        $result=array();
+        foreach($_SESSION['details'] as $key=> $val){
+            array_push($result,$val);
+        }
+        $_SESSION['details']=$result;
+        // print_r($result);
+
+        
+        
+            $_SESSION['show'].="<h2>User's Profile</h2><table class='table table-striped table-sm'>
+            <thead>
+                      <tr>
+                        <th>User Name</th>
+                        <th>Full Name</th>
+                        <th>Email </th>
+                        <th>Password</th>
+                        <th>Role</th>
+                      </tr></thead>";
+        foreach($_SESSION['details'] as $k=>$v){
+            $act="approve";
+            $act1='app';
+             if($v->status=='approve')
+         {
+             $act1='dis';
+             $act='dissapprove';
+         }
+            // print_r($v);
+            if($v->role=='user') {
+            // $v->status="pending";
+            $_SESSION['show'].="<tbody>
+            <tr>
+            <td>".$v->fullname."</td>
+            <td>".$v->username."</td>
+            <td>".$v->email."</td>
+            <td>".$v->password."</td>
+            <td>".$v->role."</td>
+            
+             <td><form action=''method='post'><button name='authenticate' value='".$act1."-".$v->userid."'>".$act."</button></form></td>
+            </tr>
+            ";
+        }
+    }
+    
+        $_SESSION['show'].="</tbody></table>";
+
+        if(isset($_POST['authenticate'])) {
+            $action=$_POST['authenticate'];
+            echo "<h1>".$_POST['authenticate']."</h1>";
+            $userid=substr($action, 4);
+            print( $userid);
+            $action=substr($action, 0, 3);
+            print( $action);
+            switch($action)
+            {
+              case 'app':
+                {
+                  $this->changeStatus($userid,"approve");
+                  break;
+                }
+              case 'dis':
+                {
+                    $this->changeStatus($userid,"disappove");
+                    break;
+                }
+            }
+          
+          
+            }
+}
+
+
+function changeStatus($userid,$status)
+{
+        $blog=$this->model('Blog');
+        $res=$blog::find($userid);
+        $res->status=$status;
+        $res->save();
+        $this->view('bloghome');
+        print_r($res);
+        
+}
+    function array($rec)
+    {
+        return array(
+            'fullname'=>$rec->fullname,
+            'username'=>$rec->username,
+            'email'=>$rec->email,
+            'password'=>$rec->password,
+            'role'=>$rec->role,
+            'status'=>$rec->status
+        );
+    }
+    public function addblog(){
+        $this->view('addblog');
+    }
+ 
 }

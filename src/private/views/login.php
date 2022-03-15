@@ -44,7 +44,7 @@
 <body class="text-center">
 
   <main class="form-signin w-50 m-auto pt-5">
-    <form action="blog" method="POST">
+    <form action="blog" method="post">
       <h1 class="h3 mb-3 fw-normal">Sign In</h1>
 
       <div class=" w-50 m-auto form-floating">

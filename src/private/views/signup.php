@@ -66,6 +66,10 @@
         <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
         <label for="floatingPassword">Password</label>
       </div>
+      <div class=" w-50 m-auto form-floating">
+        <input type="text" class="form-control" id="floatingPassword" name="role" placeholder="role">
+        <label for="floatingpassword">Role</label>
+      </div>
 
 
       <div class="checkbox mb-3">

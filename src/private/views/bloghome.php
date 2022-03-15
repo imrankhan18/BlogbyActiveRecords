@@ -1,4 +1,6 @@
-<?php ?>
+<?php 
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +20,7 @@
 </head>
 
 <body>
-  <div class="container-fluid">
+  <!-- <div class="container-fluid">
   
       <div class="row bg-secondary">
         <p class="text-center "><b>Home Categories About pages Blog Contact </b></p>
@@ -30,14 +32,13 @@
       <div class="col-md-12 text-md-center">
         <div id="demo" class="carousel slide" data-bs-ride="carousel">
 
-          <!-- Indicators/dots -->
           <div class="carousel-indicators">
             <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
             <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
             <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
           </div>
 
-          <!-- The slideshow/carousel -->
+          
           <div class="carousel-inner">
             <div class="carousel-item active">
               <img src="green.jpg" alt="Los Angeles" class="d-block a" style="width:100%">
@@ -51,7 +52,7 @@
             </div>
           </div>
 
-          <!-- Left and right controls/icons -->
+
           <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
           </button>
@@ -59,12 +60,27 @@
             <span class="carousel-control-next-icon"></span>
           </button>
         </div>
-        <h2 class="best">Best selling books ever</h2>
-      </div>
-      <form action="" method="post">
+
+      </div> -->
+      <form action="blog" method="post">
+        <!-- <div class="row">
+          <div class="col-2">
+            <p>rgfadkl</p>
+            
+          </div>
+          <div class="col-2">
+            <p>rgfadkl</p>
+            
+          </div>
+          <div class="col-2">
+            <p>rgfadkl</p>
+            
+          </div>
+          
+        </div> -->
       <div id="book2" class="row text-center text-md-10">
       
-            <a href=''><button class="btn btn-primary text-center"> Add New Blog</button></a>
+            <!-- <a href='blog'><button class="btn btn-primary text-center"> Add New Blog</button></a> -->
           </div>
         </div>
         </form>
@@ -73,6 +89,7 @@
       </div>
       
     </div>
+ 
  
   <!--  -->
 
